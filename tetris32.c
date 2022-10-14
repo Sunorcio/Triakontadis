@@ -278,7 +278,7 @@ void bufferPiece()
 
 void youwinjpg()
 {
-	SDL_Surface* s_won = SDL_LoadBMP("tertis.bmp");
+	SDL_Surface* s_won = SDL_LoadBMP("haha/tertis.bmp");
 	SDL_Texture* t_won = SDL_CreateTextureFromSurface(renderer,s_won);
 	SDL_FreeSurface(s_won);
 	SDL_SetWindowSize(window,64*pixelsize,64*pixelsize);
@@ -376,7 +376,7 @@ int main(int argc, char* argv[])
 {
 	initSDL();
 
-	SDL_Surface* s_splash = SDL_LoadBMP("splash.bmp");
+	SDL_Surface* s_splash = SDL_LoadBMP("haha/splash.bmp");
 	SDL_Texture* t_splash = SDL_CreateTextureFromSurface(renderer,s_splash);
 	SDL_FreeSurface(s_splash);
 	SDL_RenderCopy(renderer,t_splash,0,0);
