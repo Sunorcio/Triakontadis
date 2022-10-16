@@ -94,10 +94,12 @@ void rotateMatrix(char clockwise)
  *
  *	0x01000000 check most/least significant bit for left/right offset limit, then correct,
  *	check collision adjusting by msize/2 times in order down,up,furthest side,the other side*/
-	uint8_t beware = offset[1];
+	uint8_t beware[2];
+	beware[0] = offset[0];
+	beware[1] = offset[1];
 	int8_t offmin;
 	int8_t offmax;
-	for(int i=0;i<msize/2+1;i++)
+	for(int i=0;i<=msize/2;i++)
 	{
 		for(int j = 0;j<msize;j++)
 		{
@@ -109,7 +111,7 @@ void rotateMatrix(char clockwise)
 		}
 	}
 	mindone:
-	for(int i=msize;i>msize/2-1;i--)
+	for(int i=msize;i>=msize/2;i--)
 	{
 		for(int j = 0;j<msize;j++)
 		{
@@ -137,8 +139,51 @@ void rotateMatrix(char clockwise)
 		}else{if(matrix[k]>>-offset[1]&smatrix[offset[0]-msize+k]){break;}else{cani++;}}
 	}
 	if(cani>=msize){goto foundspot;}else{cani=0;}
+	
+	if(offmax-width+msize>-offmin)
+	{offset[1]++;}else{offset[1]--;}
+	if(offmin<=offset[1] && offset[1]<=offmax)
+	{
+		for(int k = 0;k<msize;k++)
+		{
+			if(offset[1]>=0)
+				{if((matrix[k]<<offset[1])&smatrix[offset[0]-msize+k]){break;}else{cani++;}
+			}else{if(matrix[k]>>-offset[1]&smatrix[offset[0]-msize+k]){break;}else{cani++;}}
+		}
+		if(cani>=msize){goto foundspot;}else{cani=0;}
+	}
 
-	offset[1]=beware;
+	if(offmax-width+msize>-offmin)
+	{offset[1]-=2;}else{offset[1]+=2;}
+	if(offmin<=offset[1] && offset[1]<=offmax)
+	{
+		for(int k = 0;k<msize;k++)
+		{
+			if(offset[1]>=0)
+				{if((matrix[k]<<offset[1])&smatrix[offset[0]-msize+k]){break;}else{cani++;}
+			}else{if(matrix[k]>>-offset[1]&smatrix[offset[0]-msize+k]){break;}else{cani++;}}
+		}
+		if(cani>=msize){goto foundspot;}else{cani=0;}
+	}
+
+	offset[0]++;
+	for(int k = 0;k<msize;k++)
+	{
+		if(offset[1]>=0)
+			{if((matrix[k]<<offset[1])&smatrix[offset[0]-msize+k]){break;}else{cani++;}
+		}else{if(matrix[k]>>-offset[1]&smatrix[offset[0]-msize+k]){break;}else{cani++;}}
+	}
+
+	offset[0]-=2;
+	for(int k = 0;k<msize;k++)
+	{
+		if(offset[1]>=0)
+			{if((matrix[k]<<offset[1])&smatrix[offset[0]-msize+k]){break;}else{cani++;}
+		}else{if(matrix[k]>>-offset[1]&smatrix[offset[0]-msize+k]){break;}else{cani++;}}
+	}
+
+	offset[1]=beware[1];
+	offset[0]=beware[0];
 	rotateMatrix(!clockwise);
 	foundspot:
 	return;
@@ -446,24 +491,6 @@ int main(int argc, char* argv[])
 				}else if(ev.key.keysym.sym == SDLK_j)
 				{
 					rotateMatrix(0);
-				}else if(ev.key.keysym.sym == SDLK_q)
-				{
-					if(msize>4)
-					{
-						msize--;
-						resizeScreen();
-						generatePiece();
-						SDL_Log("%d",msize);
-					}
-				}else if(ev.key.keysym.sym == SDLK_e)
-				{
-					if(msize<32)
-					{
-						msize++;
-						resizeScreen();
-						generatePiece();
-						SDL_Log("%d",msize);
-					}
 				}else if(ev.key.keysym.sym == SDLK_p)
 				{
 					char paused = 1;
