@@ -1,6 +1,6 @@
 # Triakontadis - Tetris32
 
-Simple SDL2 procedural tetris.
+SDL2 procedural tetris.
 
 RNG is cruel and biased.
 Rotation might feel inconsistent.
