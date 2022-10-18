@@ -2,19 +2,6 @@
 /* Triakontadomino */
 #ifndef SDL2_DEF
 #define SDL2_DEF
-#include <SDL2/SDL_error.h>
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_hints.h>
-#include <SDL2/SDL_keyboard.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_log.h>
-#include <SDL2/SDL_pixels.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
-#include <SDL2/SDL_scancode.h>
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_video.h>
 #include <SDL2/SDL.h>
 #endif
 
@@ -71,8 +58,13 @@ int8_t offset[2];
 uint32_t smatrix[65] = {0};
 
 void rotateMatrix(char clockwise)
-/* rotate nxn matrix of max n=64 90º anticlockwise (3 times if clockwise==0),
-	where bit position is one dimendsion, so an array[n] of uintx>=n */
+	/*
+	rotate nxn matrix of max n=32 90º anticlockwise (3 times if clockwise==0),
+	where bit position is one dimendsion, so an array[n] of uintx>=n,
+
+	then, check collision on current and adjacent offsets,
+	if all of them collide matrix is rotated back
+	*/
 {
 	drycount = 0;
 	uint64_t buffer;
@@ -90,10 +82,7 @@ void rotateMatrix(char clockwise)
 			}
 		}
 	}
-/*collision offset correction after rotation
- *
- *	0x01000000 check most/least significant bit for left/right offset limit, then correct,
- *	check collision adjusting by msize/2 times in order down,up,furthest side,the other side*/
+
 	uint8_t beware[2];
 	beware[0] = offset[0];
 	beware[1] = offset[1];
@@ -436,7 +425,6 @@ int main(int argc, char* argv[])
 	SDL_Event ev = {0};
 	while(running)
 	{
-		SDL_Delay(10);
 		while(SDL_PollEvent(&ev))
 		{
 			if(ev.type == SDL_QUIT)
@@ -447,6 +435,8 @@ int main(int argc, char* argv[])
 				running = 0;
 			}
 		}
+		SDL_RenderPresent(renderer);
+		SDL_Delay(8);
 	}
 	SDL_DestroyTexture(t_splash);
 
