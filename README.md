@@ -1,6 +1,6 @@
 # Triakontadis - Tetris32
 
-SDL2 progressively procedural tetris. Goal is clearing 32 lines at once.
+SDL2 progressively procedural tetris. Goal is clearing 32 lines in a single drop.
 
 RNG is cruel and biased.
 Rotation might feel inconsistent.
